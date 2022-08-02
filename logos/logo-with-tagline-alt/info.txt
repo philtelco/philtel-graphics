@@ -1,0 +1,18 @@
+
+Hope you enjoy your new logo, here are the people that
+made your beautiful logo happen :)
+font name: kelson_bd
+font link: http://www.fontfabric.com/kelson-sans/
+font author: Bruno Mello
+font author site: http://www.myfonts.com/person/Bruno_Mello/
+Slogan Font: kelson_bd
+
+icon designer: iconsmind.com
+icon designer link: /imicons
+        
+
+fontColor: {"hex":"#1F0101"}
+bgColor: {"hex":"#00aaff"}
+iconColor: {"hex":"#1F0101"}
+sloganColor: {"hex":"#ffffff"}
+      
