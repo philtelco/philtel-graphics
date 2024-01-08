@@ -1,0 +1,514 @@
+
+	  	       Intellicall Remote Payphone Software;
+			   Codes, Errors, and Indicators
+ 
+
+  By: Dub Psyke 7
+
+  For: Nettwerked.net / K-1ine
+
+  (03/10/03)
+
+  This file contains some interesting (and useful) Payphone Administration
+  'Incoming Call Request Codes', 'Phone Errors', and 'Transaction Indicators'.
+  Ever wonder what that sneaky and mysterious COCOT company is up to behind
+  the scenes? Are you a paranoid phreak who thinks they're trackin' your shit?
+  
+  Well you've guessed right, son. This document will show all the Intellicall
+  Corporation payphone information. I hope you enjoy this document. Thanks!
+
+  ->
+
+  Phone Errors
+
+ The following status codes are those that are specific to problems with the phone. 
+
+
+ Code		Message				  	     Description
+
+ 78	  Unauthorized Entry		          Incoming call received from a phone
+					          reporting unauthorized entry.
+
+ 79	  Hardware Error		          Incoming call received from a phone
+					          reporting hardware error. The HW is
+					          shown in the data field. If there is
+					          no entry in the data field the error
+					          is intermittent (i.e. phone coin jam).
+
+ 80	  Collection without clear	          Someone has collected the money without
+					          clearing the running totals.
+
+ 82  	  Credit card hardware error	          Phone reports credit card reader problem.
+
+ 83	  Time out in Service Mode	          The payphone has had the service key
+					          unlocked too long.
+
+ 84	  False incoming Call		          This is caused by the phone line in the
+					          Modem ringing once and then stopping.
+
+ 85	  Non-Intellicall incoming call	          There is an incoming call detected by IFW,
+					          but upon answer, no communications were
+					          established. The call was probably not
+					          placed by an Intellicall payphone.
+
+ 86	  Bad transmission for 3 incoming         3 attempts to communicate were unsuccessful.
+
+ 87	  N o IFW Response (no hybrid)		  Upon answering an incoming call, a four tone
+						  herald was received but when a message was
+						  sent there was no response. This sometimes
+						  means that the hybrid is bad or missing.
+
+ 88	  Program RAM error			  An incoming call was received from a phone
+						  which reports a bad program. An automatic
+						  program download will begin if the program
+						  file is available, as specified in the
+						  download configuration.
+
+ 206	  Overdue billing records		  The billing records have been in the phone
+						  beyond the requisite number of days specified
+						  in the payphone's rate table.
+
+ 207	  Billing record area full		  The billing area cannot hold any further long
+						  distance billing records. If this situation
+						  occurs the payphone reverts to the AOS for
+						  handling of long distance calls.
+
+ --
+
+	       ______________________________
+
+ 	       Incoming  Call  Request  Codes
+	       ______________________________
+
+
+ Code		     Definition		          Logged to Supp.log
+
+ 42		     Stuck key 		           SK
+
+ 43		     Low battery	           LB
+
+ 44		     PCC error		           PCC
+
+ 45		     CDR full		           CRF
+
+ 46		     Card reader sensor fail	   CRS
+
+ 47		     Card left in reader	   CCL
+
+ 48		     Low activity, Direct	   LCD
+
+ 49		     Low activity, 0+		   LA0
+
+ 50		     Low activity, 		   OSP
+
+ 51		     Low activity, offhook         LAO
+
+ 52		     Serviceman callout		   SCO
+		     (using serial number)
+
+ 53		     Serviceman callout		   SCA
+		     (using ANI)
+
+
+ ---
+
+
+  		     INET Status Codes for Errors
+
+
+  When IFW connects to a payphone and an error is present, IFW will log
+  a 031 code in the Status Code field of the Trans.dbf. The Errbyte field
+  will contain a number representing the error or errors that are currently
+  detected in the payphone. The Errbyte field will continue to log this
+  number for each command given by IFW until the error is corrected.
+
+
+   Example:
+
+
+ D  SERIAL  DATE	TIME	  CURTOT	 RUNTOTAL	RE	STA	  DWNLDFILE	RE	TRANS	ERRBY
+
+ O  051234  06/27/1999	19:46:04   				02      031		00	00257	32768
+ O  051234  06/27/1999	20:37:06   102.0000	 224.40		02	055		00	00257	32768
+ O  051234  06/27/1999	20:37:07				02	067	  	00	00257	32768
+
+
+ In the above example, when IFW connected to the payphone an error was detected and logged as 031,
+ extended error (CDR full). The batch performed the commands in the group command. However, since
+ the error still existed, the Errbyte field remains as 32768. The actual error can be found by
+ examining the Supp.log file for a status code of 031. If you cannot find the error number in the
+ Error Word Integer Table, it means it is a multiple error. You can use simple subtraction to find
+ out what the multiple error is. (Usually done by an external program but can be done manually.)
+
+
+ 1. Find the nearest number from the table that's less than or equal to the
+    error from the phone. Write down the error represented by this number.
+
+ 2. Subtract the number in the list from the error number received.
+
+ 3. Use the result of the subtraction to start over with step 1 again. For
+    example, if the error number in question is 00024, the nearest number
+    (less than or equal to) this error number is 16. This corresponds to
+    Dime Slot Sensor Error. When you subtract 16 from 24, the result is 8.
+    Code 00008 corresponds to Nickel Slot Sensor Error.
+
+ --
+
+
+ 			    Transaction  Indicators
+
+
+  Code		Message			         Description
+
+  1	        User abort		         User clicked Terminate Batch
+				 	         icon while a batch was running.
+
+  2	        No modems installed	         No modems are installed in the computer.
+
+  4		Communications error	         Various types of error (see additional
+				 	         errors following this status code table).
+
+  5		Out of memory		         There is not enough computer memory
+					         to perform the requested operation.
+
+  6		Parse error on batch file        IFW cannot find the serial number,
+					         schedule number, or the Group Command
+					         name that was used in the batch file,
+					         schedule file or the group files. Each
+					         error gives a record / line number that
+					         contains the problem. Open the batch file
+					         and use the GoTo command to locate and
+					         correct the error.
+
+  7	 	Parse error on schedule file     The schedule file has been damaged.
+
+  8		Parse error on group file        The group file has been damaged.
+
+  9		Phone database file error        General error for the phone database file.
+
+ 10		Phone index create error         Unable to create the phone index file.
+
+ 11		Phone index file error	         Phone index file read or write error.
+
+ 12		Serial number is zero	         Serial # was 0 when IFW called the phone.
+
+ 13		Rate table error	         A rate table error was detected in the phone.
+
+ 14		Bad program RAM		         Phone program was bad when IFW called the phone.
+
+ 15		Wrong serial number	         The Serial number sent by IFW does not match the
+					         Serial Number in the phone.
+
+ 16		No Answer		         The phone that was called never answered with a herald.
+
+ 17	        Max Retries Reached	         The maximum retry count set in the Configuration->System
+					         view has been reached for this phone.
+
+ 18		Modem removed from service       If any Modem has 10 communications errors in a row, the
+					         modem will be removed from service.
+
+ 19		Human answered phone	         Someone answered the phone that IFW was calling.
+
+ 25		Get serial number successful     Serial number successfully retrieved from series 100 phone.
+
+ 26		Get serial number failed         Communications error or invalid data.
+
+ 27		Set serial number successful     Set serial number successfully completed.
+
+ 28		Set serial number failed         Communications error.
+
+ 29		Get software version number      Software version number successfully retrieved.
+		successful
+
+ 30		Get software version number      Communications error.
+		failed
+
+ 31		Get error word successful        Error word successfully retrieved.
+
+ 32		Get error word failed	         Communications error.
+
+ 33		Get rate table date successful   Rate table date successfully retrieved.
+
+ 34		Get rate table date failed	 Communications error.
+
+ 35		Get model number successful	 Model number successfully retrieved.
+
+ 36		Get model number failed		 Communications error.
+
+ 39		Zero grand totals successful	 Zero grand totals successfully completed.
+
+ 40		Zero grand totals failed	 Communications error.
+
+ 41		Zero current totals successful	 Zero current totals successfully completed.
+
+ 42		Zero current totals failed	 Communications error.
+
+ 51		Get time successful		 Get time successfully completed.
+
+ 52		Get time failed			 Communications error.
+
+ 53		Set time successful		 Set time successfully completed.
+
+ 54		Set time failed			 Communications error.
+
+ 55		Get totals successful		 Get totals successfully retrieved.
+
+ 56		Get totals failed		 Communications error.
+
+ 57		Read call counters successful	 Read call counters successfully completed.
+
+ 58		Read call counters failed	 Communications error.
+
+ 59		Zero call counters successful	 Zero call counters successfully completed.
+
+ 60		Zero call counters failed	 Communications error.
+
+ 65		Download rate table successful	 Download rate table successfully completed.
+
+ 66		Download rate table failed	 Communications error.
+
+ 67		Download program successful	 Download program successfully completed.
+
+ 68		Download program failed		 Communications error.
+
+ 69		Get rate table successful	 Get rate table successfully completed.
+
+ 70		Get rate table failed		 Communication error.
+
+ 74		Set 5-minute timeout failed	 Command to set timeout was unsuccessful.
+
+ 75		Authorized entry		 Incoming call received from a phone reporting
+						 authorized entry.
+
+ 76		Collection with clear		 Incoming call received from a phone reporting
+						 a collection in which totals were cleared.
+
+ 77		Full cash box			 Incoming call received from a phone reporting
+						 a full cash box.
+
+ 78		Unauthorized Entry		 Incoming call received from a phone reporting
+						 unauthorized entry.
+
+ 79		Hardware Error			 Incoming call received from a phone reporting
+						 hardware error. The HW is shown in the data
+						 field. If there is no entry in the data field
+						 the error is intermittent (i.e., intermitten
+						 coin jam)
+
+ 80		Collection without clear 	 Collection was made without clearing the totals.
+
+ 81		Low activity		 	 The programmed activity levels expected were not
+						 reached for the last 24 hours.
+
+ 82		Credit card hardware error	 Phone reports credit card reader problem.
+
+ 83		Time out in Service Mode	 Phone has had the service key unlocked too long.
+
+ 84		False incoming call		 This is caused by the phone line in the Modem
+						 ringing once and then stopping.
+
+ 85		Non-Intellicall incoming call	 There is an incoming call detected by IFW, but upon
+						 answer, no communications were established. The call
+						 was probably not placed by an Intellicall payphone.
+
+ 86		Bad transmission for 3 tries     Three attempts to communicate were unsuccessful.
+		(Incoming)
+
+ 88		Program RAM error		 An incoming call was received from a phone that reports
+						 a bad program. An automatic program download will begin
+						 if the program file is available, as specified in the
+						 download configuration.
+
+ 91		Clock stuck in phone		 The clock in the phone has stopped working properly. This
+						 has not been implemented and is reserved for the future.
+
+ 93		Low activity, Direct		 The payphone did not make the number of direct completed
+						 calls within 24 hours based on the setting in the .pac file.
+
+ 94		Low activity, 0+		 The payphone did not make the number of 0+ calls within 24
+						 hours based on the setting in the .pac file.
+
+ 95		Low activity, OSP		 The payphone did not make the number of dial out Operator
+						 Service Provider calls within 24 hours based on the setting
+						 in the .pac file.
+
+ 96		Low activity, offhook		 The payphone did not make the number of direct completed calls
+						 based on the setting in the .pac file within 100 offhooks.
+
+ 97		Service Callout			 IFW processed a request for Service Callout and performs the
+						 commands in the Group file, Init.at2.
+
+ 101		Starting get serial number	 IFW started the get-serial-number command.
+
+ 102		Starting set serial number	 IFW started the set-serial-number command.
+
+ 103		Starting get software		 IFW started the get-software-version-number command.
+		version number
+
+ 104		Starting get error word		 IFW started the get-error-word command.
+
+ 105		Starting get rate table date	 IFW started the get-rate-table-date command.
+
+ 106		Starting get model number	 IFW started the get-model-number command.
+
+ 108		Starting zero grand totals	 IFW started the zero-grand-totals command.
+
+ 109		Starting zero current totals	 IFW started the zero-current-totals command.
+
+ 114		Starting get time		 IFW started the get-time command.
+
+ 115		Starting set time		 IFW started the set-time command.
+
+ 116		Starting get totals	         IFW started the get-totals command.
+
+ 117		Starting read call counters	 IFW started the get-speed-dial-counters command.
+
+ 118		Starting zero call counters	 IFW started the zero-call-counters command.
+
+ 121		Starting download rate table	 IFW started the download-rate-table command.
+
+ 122		Starting download program	 IFW started the download-program-file command.
+
+ 125		Starting to get billing records  IFW started the get-bill-records command.
+
+ 126		Starting to reset billing	 IFW started the reset-bill-records command.
+		records
+
+ 127		Starting download speech file	 IFW started the download-speech-file command.
+
+ 128		Starting to get billing history	 IFW started the get-bill-history command.
+
+ 130		Starting to get rate table	 IFW started the get-rate-table command.
+
+ 146		Starting to reset phone		 IFW started the reset-phone command.
+
+ 147		Starting to get common		 IFW started the get-common-config command
+		config file
+
+ 148		Starting to get battery level	 IFW started the get-battery command.
+
+ 149		Starting to get CDRs	         IFW started the get-cdr command.
+
+ 150		Starting to set ANI		 IFW started the set-ani command.
+
+ 152		Starting to set elock code	 IFW started the set-elock-code command.
+
+ 200		Warning: NO billing password	 The billing password has never been set in
+						 the payphone.
+
+ 201		Invalid billing password.	 The billing password is invalid.
+
+ 202		Bad phone billing header. 	 The billing record header has failed checksum.
+						 Data is corrupted. This produces a .bad file.
+						 Refer to your POSTREC User's Guide for infor-
+						 mation about processing .bad files.
+
+ 203		Bad ANI in phone		 The ANI number does not match the phone number
+						 dialed when retrieving the billing records.
+
+ 206		Overdue billing records	         The billing records have been in the phone beyond
+						 the requisite number of days specified in the pay-
+						 phone's rate table.
+
+ 207		Billing record area full	 The billing area cannot hold any further long
+					  	 distance billing records. If this situation
+						 occurs the payphone reverts to the AOS for
+						 handling of long distance calls.
+
+ 209		Warning: Incorrect date & time.  The payphone’s date/time disagrees with the PC's
+						 date/time by +/- 5 minutes. This can effect proper
+						 processing of billing records. Go into Manual Mode
+						 and set the date and time for the payphone in
+						 question. Consider modifying IFW system config-
+						 uration to enable Auto-Update Date and Time field.
+
+ 210		Bad money totals		 The money totals have been corrupted.
+
+ 211		Bad configuration		 A version of phone code resides in the payphone
+		Software /Hardware		 that is not compatible with the hardware.
+
+ 212		VICS access error		 A phone was erroneously programmed to call the
+						 number for IFW instead of VICS for VICS validation.
+
+ 214		Phone called IFW		 IFW received a call from the phone.
+
+ 215		ANI corrected in phone		 IFW found bad ANI; updated it with the home area code in
+		(old ANI / new ANI)		 the Rate Table plus the last 7 digits dialed to reach the
+						 phone (this is true if the Use Phone Database for ANI Check
+						 field in the Configuration->System view isn't selected).
+						 If this field is selected, then the ANI will be changed to
+						 whatever 10-digit number is in the Phone.dbf.
+
+ 219		Group Command Not Found		 This message appears when there is a Group Command (Group Cmd)
+						 specified in the Phone.dbf and the Group Command does not exist
+						 when the phone calls in to IFW.
+
+ 220		Download common config		 Download common config successfully completed.
+		successful
+
+ 221		Download common config failed	 Communication error.
+
+ 222		Phone will reset after hang-up	 Phone will reboot after disconnect from IFW.
+
+ 223		Phone may not reset after	 Communication error.
+		hang-up
+
+ 224		Get common config successful	 Get common config successfully completed.
+
+ 225		Get common config failed	 Communication error.
+
+ 226		Get battery level successful	 Get battery level successfully completed.
+
+ 227		Get battery level failed	 Communication error.
+
+ 228		Get CDR records successful	 Get CDR records successfully completed.
+
+ 229		Get CDR records failed		 Unable to retrieve Call records.
+
+ 230		Clear CDR area failed		 Unable to clear Call records.
+
+ 231		Init CDR area failed		 Communication error.
+
+ 232		CDR area full			 Call detail records are over 136 records.
+
+ 233		Call counter read successful	 Call counter read successfully completed.
+
+ 234		Call counter read failed	 Communications error.
+
+ 235		Set ANI successful		 Set ANI successfully completed.
+
+ 236		Set ANI failed			 Communications error.
+
+ 237		Set elock code successful	 Set elock code successfully completed.
+
+ 238		Set elock code failed		 Communications error.
+
+ 300		Cannot transmit			 Communications error.
+		billing password
+
+ 301		Reset billing records failed	 Unable to clear billing record area.
+
+ 302		Download speech successful	 Download speech successfully completed.
+
+ 303		Download speech failed		 Communications error.
+
+ 304		Get billing records successful	 Get billing records successfully completed.
+
+ 305		Get billing records failed	 Communications error. Invalid billing password.
+						 Bad billing header. IFW renames this file with
+						 a .bad extension. Refer to your POSTREC User’s
+						 Guide for additional information and instructions
+						 on processing .bad files.
+
+ 306		Get billing history successful	 Get billing history successfully completed.
+
+ 307		Get billing history failed	 Communications error.
+
+ 308		Set billing password successful	 Set billing password successfully completed.
+
+ 309		Set billing password failed	 Communications error. Invalid billing password.
+
+ 320		Reset billing area failed	 Unable to reset billing area.
+
+
+ - EOF -
